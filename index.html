@@ -46,13 +46,14 @@
             background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 20px;
             font-size: 0.85rem; display: none; z-index: 100;
         }
+        .loading { text-align: center; color: var(--accent); padding: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>⚡ Porbandar Govt & PGVCL Tenders</h1>
-        <p style="font-size:0.8rem; color: var(--accent);">Fast Live Sync & One-Tap Share</p>
+        <p style="font-size:0.8rem; color: var(--accent);">Live Sync with Automatic JSON Feed</p>
     </header>
 
     <div class="controls">
@@ -67,24 +68,42 @@
     </div>
 
     <div class="tender-list" id="tenderContainer">
-        <!-- Tenders will load here -->
+        <div class="loading">Live Tenders Load Ho Rahe Hain...</div>
     </div>
 
     <div class="toast" id="toast">Details copied to clipboard!</div>
 
     <script>
-        // Google Sheet Live JSON / Fast Feed Data
-        const localTenders = [
-            { id: "1", dept: "PGVCL", title: "Kamlabaug Substation Meter & Line Replacement", cost: "₹5,00,000", date: "13-Oct-2026", link: "https://tender.nprocure.com" },
-            { id: "2", dept: "PGVCL", title: "AMC Computer Systems Porbandar City Division", cost: "₹1,70,000", date: "22-Oct-2026", link: "https://tender.nprocure.com" },
-            { id: "3", dept: "IRRIGATION", title: "Barada Ghed Integrated Drainage Package-3", cost: "₹115.20 Cr", date: "19-Oct-2026", link: "https://tender.nprocure.com" },
-            { id: "4", dept: "IRRIGATION", title: "Sorthi Ghed Rubber Dam Installation (Madhuvanti River)", cost: "₹26.09 Cr", date: "04-Nov-2026", link: "https://tender.nprocure.com" },
-            { id: "5", dept: "PMC", title: "Ranavav Jambuvanti Caves Tourism Infra Works", cost: "₹7.19 Cr", date: "12-Oct-2026", link: "https://tender.nprocure.com" }
-        ];
+        let allTenders = [];
+
+        // 🚀 LIVE JSON FETCHING FROM REPOSITORY
+        async function loadLiveTenders() {
+            try {
+                // Cache bypass ke liye timestamp add kiya hai taaki hamesha fresh data mile
+                const response = await fetch('tenders.json?cache=' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error("JSON file load nahi hui");
+                }
+                allTenders = await response.json();
+                renderTenders(allTenders);
+            } catch (error) {
+                console.error("Error loading tenders:", error);
+                document.getElementById('tenderContainer').innerHTML = `
+                    <div style="text-align:center; color:#f87171; padding:20px;">
+                        Tenders load karne mein error aaya. Kripya check karein ki 'tenders.json' file exist karti hai ya nahi.
+                    </div>
+                `;
+            }
+        }
 
         function renderTenders(items) {
             const container = document.getElementById('tenderContainer');
             container.innerHTML = '';
+
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding:20px;">Koi tender nahi mila.</div>';
+                return;
+            }
 
             items.forEach(t => {
                 const textToShare = `🚨 *Porbandar Tender Alert*\n\n📌 *Work:* ${t.title}\n🏢 *Dept:* ${t.dept}\n💰 *Cost:* ${t.cost}\n📅 *Due Date:* ${t.date}\n🔗 *Link:* ${t.link}`;
@@ -122,7 +141,7 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
             const dept = document.getElementById('deptSelect').value;
 
-            const filtered = localTenders.filter(t => {
+            const filtered = allTenders.filter(t => {
                 const matchQuery = t.title.toLowerCase().includes(query) || t.dept.toLowerCase().includes(query);
                 const matchDept = (dept === 'ALL' || t.dept === dept);
                 return matchQuery && matchDept;
@@ -131,7 +150,8 @@
             renderTenders(filtered);
         }
 
-        renderTenders(localTenders);
+        // App start hote hi live data fetch karo
+        loadLiveTenders();
     </script>
 </body>
 </html>
