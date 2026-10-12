@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="gu">
-<link rel="manifest" href="manifest.json">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
     <title>Porbandar Tender & PGVCL Tracker</title>
     <style>
         :root {
@@ -79,7 +80,6 @@
         // 🚀 LIVE JSON FETCHING FROM REPOSITORY
         async function loadLiveTenders() {
             try {
-                // Cache bypass ke liye timestamp add kiya hai taaki hamesha fresh data mile
                 const response = await fetch('tenders.json?cache=' + new Date().getTime());
                 if (!response.ok) {
                     throw new Error("JSON file load nahi hui");
@@ -150,7 +150,6 @@
             renderTenders(filtered);
         }
 
-        // App start hote hi live data fetch karo
         loadLiveTenders();
     </script>
 </body>
