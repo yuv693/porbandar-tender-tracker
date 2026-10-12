@@ -1,10 +1,10 @@
 [
-    {
-        "id": "1",
-        "dept": "PGVCL",
-        "title": "Kamlabaug Substation Meter & Line Replacement",
-        "cost": "₹5,00,000",
-        "date": "13-Oct-2026",
-        "link": "https://tender.nprocure.com"
-    }
+  {
+    "id": "654321",
+    "title": "Kamlabaug Substation Meter & Line Replacement",
+    "dept": "PGVCL",
+    "cost": "₹5,000,000",
+    "date": "13-Oct-2026",
+    "link": "https://tender.nprocure.com/"
+  }
 ]
