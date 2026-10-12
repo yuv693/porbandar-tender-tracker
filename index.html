@@ -40,7 +40,7 @@
         .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .controls input, .controls select {
             flex: 1; padding: 10px; background: var(--bg-card); border: 1px solid var(--border);
-            color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem;
+            color: #fff; border-radius: 8px; outline: none; font-size: 0.9rem; min-width: 140px;
         }
 
         .tender-list { display: flex; flex-direction: column; gap: 15px; }
@@ -81,13 +81,20 @@
     </header>
 
     <div class="controls">
-        <input type="text" id="searchInput" placeholder="Search (PGVCL, Barda, Road, ID...)" oninput="filterData()">
+        <input type="text" id="searchInput" placeholder="Search (Title, Dept, ID...)" oninput="filterData()">
+        
         <select id="deptSelect" onchange="filterData()">
             <option value="ALL">All Depts</option>
             <option value="PGVCL">PGVCL</option>
             <option value="IRRIGATION">Irrigation</option>
             <option value="R&B">R&B</option>
             <option value="PMC">PMC / Nagarpalika</option>
+        </select>
+
+        <select id="monthSelect" onchange="filterData()">
+            <option value="ALL">All Months</option>
+            <option value="THIS_MONTH">Closing This Month</option>
+            <option value="NEXT_MONTH">Closing Next Month</option>
         </select>
     </div>
 
@@ -168,15 +175,36 @@
         function filterData() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const dept = document.getElementById('deptSelect').value;
+            const monthFilter = document.getElementById('monthSelect').value;
+
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const nextMonth = (currentMonth + 1) % 12;
+            const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear;
 
             const filtered = allTenders.filter(t => {
                 const idMatch = (t.id || '').toLowerCase().includes(query);
                 const titleMatch = (t.title || '').toLowerCase().includes(query);
                 const deptMatch = (t.dept || '').toLowerCase().includes(query);
-                
                 const matchQuery = idMatch || titleMatch || deptMatch;
+
                 const matchDept = (dept === 'ALL' || t.dept === dept);
-                return matchQuery && matchDept;
+
+                let matchMonth = true;
+                if (monthFilter !== 'ALL' && t.date) {
+                    const tenderDate = new Date(t.date);
+                    if (!isNaN(tenderDate.getTime())) {
+                        if (monthFilter === 'THIS_MONTH') {
+                            matchMonth = (tenderDate.getMonth() === currentMonth && tenderDate.getFullYear() === currentYear);
+                        } else if (monthFilter === 'NEXT_MONTH') {
+                            matchMonth = (tenderDate.getMonth() === nextMonth && tenderDate.getFullYear() === nextMonthYear);
+                        }
+                    }
+                }
+
+                return matchQuery && matchDept && matchMonth;
             });
 
             renderTenders(filtered);
