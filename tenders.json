@@ -1,5 +1,13 @@
 [
   {
+    "id": "PRB-13102026-1",
+    "title": "Porbandar District Infrastructure & Maintenance Works",
+    "dept": "GETCO / PGVCL / Nagarpalika",
+    "cost": "₹15,00,000",
+    "date": "2026-11-30",
+    "link": "https://tender.nprocure.com/"
+  },
+  {
     "id": "PRB-2026-001",
     "title": "66 KV Khapat Substation Civil and Electrical Works",
     "dept": "GETCO",
@@ -16,4 +24,3 @@
     "link": "https://tender.nprocure.com/"
   }
 ]
-
