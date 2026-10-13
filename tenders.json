@@ -1,18 +1,14 @@
-[
-  {
-    "id": "602184",
-    "title": "Kamlabaug Substation Meter & Line Replacement",
-    "dept": "PGVCL",
-    "cost": "₹5,000,000",
-    "date": "25-Oct-2026",
-    "link": "https://tender.nprocure.com/"
-  },
-  {
-    "id": "602185",
-    "title": "Porbandar Coastal Road Repairs",
-    "dept": "R&B",
-    "cost": "₹12,000,000",
-    "date": "10-Nov-2026",
-    "link": "https://tender.nprocure.com/"
-  }
-]
+def is_porbandar_tender(tender_text):
+    # Sabhi local keywords ki list jo Porbandar district ko cover kare
+    keywords = [
+        "porbandar", "khapat", "chhaya", "kutiyana", "ranavav", 
+        "barda", "ghed", "porbandar district"
+    ]
+    
+    # Text ko lowercase karke check karo ki koi bhi keyword match hota hai ya nahi
+    tender_text_lower = tender_text.lower()
+    for word in keywords:
+        if word in tender_text_lower:
+            return True
+            
+    return False
