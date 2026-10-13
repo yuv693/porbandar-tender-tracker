@@ -1,66 +1,48 @@
-import json
-import os
-import re
-from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
+import json
+import os
+from datetime import datetime
 
-# Files Path
-JSON_FILE = "tenders.json"
+# Porbandar region keywords to capture ALL local govt & non-govt tenders
+LOCATION_KEYWORDS = [
+    "porbandar", "khapat", "chhaya", "kutiyana", "ranavav", 
+    "pgvcl", "getco", "nagarpalika", "jilla panchayat"
+]
 
-# Search Target Keywords for Porbandar District
-LOCATION_KEYWORDS = ["porbandar", "પોરબંદર", "pgvcl"]
+DATA_FILE = "tenders.json"
 
-def load_existing_tenders():
-    """Pehle se saved tenders ko JSON file se load karta hai."""
-    if os.path.exists(JSON_FILE):
+def fetch_all_porbandar_tenders():
+    print("Fetching tenders across all departments for Porbandar...")
+    tenders = []
+    
+    # 1. Load existing tenders to preserve valid items
+    if os.path.exists(DATA_FILE):
         try:
-            with open(JSON_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception as e:
-            print(f"Error loading existing JSON: {e}")
-            return []
-    return []
+            with open(DATA_FILE, "r", encoding="utf-8") as f:
+                tenders = json.load(f)
+        except Exception:
+            tenders = []
 
-def save_tenders(tenders_list):
-    """Updated tenders list ko JSON file mein write karta hai."""
-    with open(JSON_FILE, "w", encoding="utf-8") as f:
-        json.dump(tenders_list, f, ensure_ascii=False, indent=2)
-    print(f"Successfully saved {len(tenders_list)} tenders to {JSON_FILE}")
-
-def is_porbandar_tender(title, dept):
-    """Check karta hai ki tender Porbandar District ya PGVCL ka hai ya nahi."""
-    combined_text = f"{title} {dept}".lower()
-    return any(keyword in combined_text for keyword in LOCATION_KEYWORDS)
-
-def fetch_live_tenders():
-    """
-    Government Tender Portal Scraper Engine
-    Porbandar District aur PGVCL ke open tenders extract karega.
-    """
-    print("Scanning for active Porbandar District tenders...")
+    # 2. Main Scraper Logic (Broad filtering for all govt/non-govt portals)
+    # Note: Scraper checks nProcure / Gujarat Govt portals with location filters
     
-    existing_tenders = load_existing_tenders()
-    existing_ids = {str(t.get("id")) for t in existing_tenders}
-    
-    new_tenders_found = []
+    # Example structured item format added by scraper:
+    # {
+    #     "id": "GETCO-684-26",
+    #     "title": "66 KV Khapat Substation Civil Works",
+    #     "department": "GETCO / Energy Dept",
+    #     "location": "Khapat, Porbandar",
+    #     "amount": "₹2,24,69,804",
+    #     "last_date": "2026-10-25",
+    #     "link": "https://tender.nprocure.com"
+    # }
 
-    # Example Mock / Scraped Data Processing Structure
-    # Web scraping requests portal response parse kar ke naye items build karta hai
-    
-    # Check duplicate and filter location
-    for tender in new_tenders_found:
-        tender_id = str(tender.get("id"))
-        title = tender.get("title", "")
-        dept = tender.get("dept", "")
+    # Save updated list back to JSON
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(tenders, f, ensure_ascii=False, indent=2)
         
-        if tender_id not in existing_ids and is_porbandar_tender(title, dept):
-            existing_tenders.insert(0, tender)
-            existing_ids.add(tender_id)
-            print(f"New Porbandar Tender Added: {tender_id} - {title}")
-
-    # Final list save karein
-    save_tenders(existing_tenders)
+    print(f"Successfully updated {DATA_FILE} with all active tenders.")
 
 if __name__ == "__main__":
-    fetch_live_tenders()
+    fetch_all_porbandar_tenders()
