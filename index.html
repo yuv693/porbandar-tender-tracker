@@ -86,6 +86,7 @@
         <select id="deptSelect" onchange="filterData()">
             <option value="ALL">All Depts</option>
             <option value="PGVCL">PGVCL</option>
+            <option value="GETCO">GETCO</option>
             <option value="IRRIGATION">Irrigation</option>
             <option value="R&B">R&B</option>
             <option value="PMC">PMC / Nagarpalika</option>
@@ -135,9 +136,14 @@
             items.forEach(t => {
                 const tenderId = t.id || 'N/A';
                 const tenderTitle = t.title || 'No Title';
-                const portalUrl = t.link || 'https://tender.nprocure.com/';
+                const deptName = t.dept || t.department || 'Gujarat Govt';
+                const tenderCost = t.cost || t.amount || 'N/A';
+                const dueDate = t.date || t.last_date || 'N/A';
 
-                const textToShare = `🚨 *Porbandar Tender Alert*\n\n🆔 *Tender ID:* ${tenderId}\n📌 *Work:* ${tenderTitle}\n🏢 *Dept:* ${t.dept}\n💰 *Cost:* ${t.cost}\n📅 *Due Date:* ${t.date}\n🔗 *Portal:* ${portalUrl}`;
+                // 🚀 Direct Deep-Link Setup: Use exact tender link if available
+                const portalUrl = (t.link && t.link.startsWith('http')) ? t.link : 'https://tender.nprocure.com/';
+
+                const textToShare = `🚨 *Porbandar Tender Alert*\n\n🆔 *Tender ID:* ${tenderId}\n📌 *Work:* ${tenderTitle}\n🏢 *Dept:* ${deptName}\n💰 *Cost:* ${tenderCost}\n📅 *Due Date:* ${dueDate}\n🔗 *Direct Link:* ${portalUrl}`;
                 
                 const card = document.createElement('div');
                 card.className = 'tender-card';
@@ -145,17 +151,17 @@
                     <div class="tender-title">${tenderTitle}</div>
                     <div class="tender-id-tag">🆔 Tender ID: <strong>${tenderId}</strong></div>
                     <div class="tender-details">
-                        <span>Dept: <strong>${t.dept}</strong></span>
-                        <span>Cost: <strong>${t.cost}</strong></span>
+                        <span>Dept: <strong>${deptName}</strong></span>
+                        <span>Cost: <strong>${tenderCost}</strong></span>
                     </div>
                     <div class="tender-details">
-                        <span>Due Date: <strong>${t.date}</strong></span>
+                        <span>Due Date: <strong>${dueDate}</strong></span>
                     </div>
                     <div class="actions">
                         <button class="btn btn-copy" onclick="copyText('${encodeURIComponent(tenderTitle)}', 'Tender Name Copied!')">📋 Copy Name</button>
                         <button class="btn btn-copy" onclick="copyText('${encodeURIComponent(tenderId)}', 'Tender ID Copied!')">🔑 Copy ID</button>
-                        <a href="${portalUrl}" target="_blank" class="btn btn-portal">🌐 Open Portal</a>
-                        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare)}" target="_blank" class="btn btn-wa">💬 WhatsApp Share</a>
+                        <a href="${portalUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-portal">🌐 Direct Tender Open ↗</a>
+                        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare)}" target="_blank" rel="noopener noreferrer" class="btn btn-wa">💬 WhatsApp Share</a>
                     </div>
                 `;
                 container.appendChild(card);
@@ -185,16 +191,18 @@
             const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear;
 
             const filtered = allTenders.filter(t => {
+                const tDept = (t.dept || t.department || '').toLowerCase();
                 const idMatch = (t.id || '').toLowerCase().includes(query);
                 const titleMatch = (t.title || '').toLowerCase().includes(query);
-                const deptMatch = (t.dept || '').toLowerCase().includes(query);
+                const deptMatch = tDept.includes(query);
                 const matchQuery = idMatch || titleMatch || deptMatch;
 
-                const matchDept = (dept === 'ALL' || t.dept === dept);
+                const matchDept = (dept === 'ALL' || tDept.includes(dept.toLowerCase()));
 
                 let matchMonth = true;
-                if (monthFilter !== 'ALL' && t.date) {
-                    const tenderDate = new Date(t.date);
+                const dateStr = t.date || t.last_date;
+                if (monthFilter !== 'ALL' && dateStr) {
+                    const tenderDate = new Date(dateStr);
                     if (!isNaN(tenderDate.getTime())) {
                         if (monthFilter === 'THIS_MONTH') {
                             matchMonth = (tenderDate.getMonth() === currentMonth && tenderDate.getFullYear() === currentYear);
