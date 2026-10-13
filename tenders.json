@@ -1,14 +1,1 @@
-def is_porbandar_tender(tender_text):
-    # Sabhi local keywords ki list jo Porbandar district ko cover kare
-    keywords = [
-        "porbandar", "khapat", "chhaya", "kutiyana", "ranavav", 
-        "barda", "ghed", "porbandar district"
-    ]
-    
-    # Text ko lowercase karke check karo ki koi bhi keyword match hota hai ya nahi
-    tender_text_lower = tender_text.lower()
-    for word in keywords:
-        if word in tender_text_lower:
-            return True
-            
-    return False
+
