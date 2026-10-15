@@ -75,7 +75,7 @@
         .btn {
             padding: 8px 10px; border-radius: 6px; font-size: 0.8rem;
             border: none; cursor: pointer; text-decoration: none; font-weight: bold;
-            display: inline-flex; align-items: center; justify-content: justify; gap: 5px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 5px;
         }
         .btn-wa { background: var(--whatsapp); color: #000; flex: 1; min-width: 120px; }
         .btn-copy { background: #2a2a2a; color: #fff; border: 1px solid var(--border); }
@@ -162,7 +162,15 @@
 
                 const portalUrl = (t.link && t.link.startsWith('http')) ? t.link : 'https://tender.nprocure.com/';
 
-                const textToShare = `🚨 *પોરબંદર ટેન્ડર અપડેટ* 🚨\n\n🆔 *ટેન્ડર ID:* ${tenderId}\n📌 *કામનું નામ:* ${tenderTitle}\n🏛️ *ખાતું/વિભાગ:* ${deptName}\n💰 *અંદાજિત રકમ:* ${tenderCost}\n📅 *છેલ્લી તારીખ:* ${dueDate}\n\n🔗 *પોર્ટલ લિંક:* ${portalUrl}\n\n👉 *ટીપ:* પોર્ટલ પર જઈને ટેન્ડર ID *${tenderId}* સર્ચ કરો.`;
+                const textToShare = `🚨 *પોરબંદર ટેન્ડર અપડેટ* 🚨\n\n` +
+                    `🆔 *ટેન્ડર ID:* ${tenderId}\n` +
+                    `📌 *કામનું નામ:* ${tenderTitle}\n` +
+                    `🏛️ *ખાતું/વિભાગ:* ${deptName}\n` +
+                    `💰 *અંદાજિત રકમ:* ${tenderCost}\n` +
+                    `📅 *છેલ્લી તારીખ:* ${dueDate}\n\n` +
+                    `🔗 *પોર્ટલ લિંક:* ${portalUrl}\n\n` +
+                    `👉 *ટીપ:* પોર્ટલ પર જઈને ટેન્ડર ID *${tenderId}* સર્ચ કરો.\n\n` +
+                    `📲 *રોજિંદા ટેન્ડર અપડેટ્સ માટે ગ્રુપમાં જોડાઓ:* \nhttps://chat.whatsapp.com/DJfj7DiGrg0DzegprDfKJU`;
                 
                 const card = document.createElement('div');
                 card.className = 'tender-card';
