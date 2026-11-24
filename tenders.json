@@ -1,5 +1,13 @@
 [
   {
+    "id": "PRB-24112026-1",
+    "title": "JCB, Dumper & Heavy Vehicle Rental Transport Contract",
+    "dept": "PGVCL",
+    "cost": "₹4,20,000",
+    "date": "2026-11-30",
+    "link": "https://tender.nprocure.com/"
+  },
+  {
     "id": "PRB-23112026-1",
     "title": "Gravel, Aggregate & Metal Material Supply for Site Work",
     "dept": "PMC",
@@ -148,14 +156,6 @@
     "title": "Masonry, RCC Work & Civil Construction Manpower Supply",
     "dept": "JILLA PANCHAYAT",
     "cost": "₹25,00,000",
-    "date": "2026-11-30",
-    "link": "https://tender.nprocure.com/"
-  },
-  {
-    "id": "PRB-04112026-1",
-    "title": "Masonry, RCC Work & Civil Construction Manpower Supply",
-    "dept": "PMC",
-    "cost": "₹8,50,000",
     "date": "2026-11-30",
     "link": "https://tender.nprocure.com/"
   }
